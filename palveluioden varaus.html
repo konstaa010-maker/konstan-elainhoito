@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>palveluiden varaus</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body class="page-3">
+
+<button class="booking-button" onclick="openBookingForm()">
+    Varaa aika
+</button>
+
+<div id="bookingPopup" class="popup">
+
+    <div class="popup-content">
+
+        <h2>Varaa palvelu</h2>
+
+        <label>Nimi</label>
+        <input type="text" id="name" placeholder="Nimi" required>
+
+        <label>Päivämäärä</label>
+        <input type="date" id="date" required>
+
+        <label>Kellonaika</label>
+        <input type="time" id="time">
+
+        <label>Eläin</label>
+        <input type="text" id="animal" placeholder="Esim. Koira" required>
+
+        <label>Osoite</label>
+        <input type="text" id="address" placeholder="Osoite" required>
+
+        <label>Puhelinnumero</label>
+        <input type="tel" id="phone" placeholder="Puhelinnumero" required>
+
+        <label>Mitä tarvitset?</label>
+        <textarea rows="4" id="service" placeholder="Kuvaile mitä palvelua tarvitset..." required></textarea>
+
+        <label>Lisätietoja</label>
+        <textarea rows="4" id="details" placeholder="Lisätietoja varaukseen, jos niitä om..."></textarea>
+
+        <button onclick="closeBookingForm()">Sulje</button>
+
+        <button onclick="submitBooking()">
+    Lähetä varaus
+</button>
+
+    </div>
+
+</div>
+
+<footer class="footer" >
+    <p>Huom: En voi luvata, että pääsen jokaiselle varaukselle.</p>
+    
+    <p>Vastaan varauksiin tekstiviestillä ja katson ne läpi mahdollisimman pian. Jos et saa vastausta, ota yhteyttä sähköpostilla.</p>
+</footer>
+
+<script>
+    function openBookingForm() {
+        document.getElementById("bookingPopup").style.display = "block";
+    }
+
+    function closeBookingForm() {
+        document.getElementById("bookingPopup").style.display = "none";
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+(function() {
+    emailjs.init({
+        publicKey: "f0te4L_dyFKJ2dtAH"
+    });
+})();
+</script>
+
+<script>
+    function submitBooking() {
+
+        console.log("submitBooking running");
+
+        var name = document.getElementById("name").value;
+        var date = document.getElementById("date").value;
+        var time = document.getElementById("time").value;
+        var animal = document.getElementById("animal").value;
+        var address = document.getElementById("address").value;
+        var phone = document.getElementById("phone").value;
+        var service = document.getElementById("service").value;
+        var details = document.getElementById("details").value;
+
+        // Check required fields
+        if (
+            !name.trim() ||
+            !date.trim() ||
+            !time.trim() ||
+            !animal.trim() ||
+            !address.trim() ||
+            !phone.trim() ||
+            !service.trim()
+        ) {
+            alert("Täytä kaikki pakolliset kentät.");
+            return;
+        }
+
+        var templateParams = {
+            name: name,
+            date: date,
+            time: time,
+            animal: animal,
+            address: address,
+            phone: phone,
+            service: service,
+            details: details
+        };
+
+        emailjs.send('service_q2aln0g', 'template_u2yfb82', templateParams)
+            .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                alert('Varaus lähetetty onnistuneesti!');
+                closeBookingForm();
+            }, function(error) {
+                console.log('FAILED...', error);
+                alert('Varausta ei voitu lähettää. Yritä uudelleen.');
+            });
+    }
+</script>
+
+</body>
+
+</html>
